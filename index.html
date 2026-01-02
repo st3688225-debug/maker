@@ -21,8 +21,8 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             font-family: 'Noto Sans TC', sans-serif;
-            overflow: hidden; 
-            height: 100vh;
+            overflow-x: hidden; 
+            min-height: 100vh;
             touch-action: manipulation;
         }
 
@@ -33,10 +33,11 @@
             border: 4px solid #444;
             box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
             position: relative;
+            width: 100%;
         }
 
         .hp-bar {
-            height: 24px;
+            height: 32px; /* 稍微加高 */
             background: #222;
             border: 2px solid #fff;
             position: relative;
@@ -54,6 +55,7 @@
             border: 2px solid #444;
             background: #222;
             color: #fff;
+            padding: 1.5rem 0.5rem; /* 增加點擊高度 */
         }
 
         .btn-score:active { transform: scale(0.9); background: var(--accent-cyan); color: #000; }
@@ -87,7 +89,7 @@
 
         .rank-text {
             display: block;
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-size: clamp(3rem, 12vw, 5rem); /* 手機上更明顯 */
             font-weight: 900;
             line-height: 1.2;
             margin-top: 1rem;
@@ -114,19 +116,31 @@
         }
         
         .super-shake { animation: shake 0.1s infinite; }
+
+        /* 手機版字體微調 */
+        @media (max-width: 640px) {
+            .btn-score {
+                padding: 1.25rem 0.25rem;
+                font-size: 1.5rem;
+            }
+            #question-text {
+                font-size: 1.4rem;
+                line-height: 1.6;
+            }
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
+<body class="flex flex-col items-center justify-start sm:justify-center min-h-screen p-4 pt-8 sm:p-4">
 
     <div class="scanlines"></div>
 
     <div id="game-container" class="w-full max-w-2xl relative">
         
         <div class="flex justify-between items-center mb-4 px-2">
-            <div class="pixel-font text-cyan-400 text-[10px] sm:text-xs">
+            <div class="pixel-font text-cyan-400 text-[12px] sm:text-xs">
                 任務進度.<span id="stage-num">00</span>
             </div>
-            <div id="loading-status" class="pixel-font text-pink-500 text-[10px] sm:text-xs press-start">
+            <div id="loading-status" class="pixel-font text-pink-500 text-[12px] sm:text-xs press-start">
                 等待數據中...
             </div>
         </div>
@@ -136,91 +150,91 @@
         </div>
 
         <!-- Start Screen -->
-        <div id="phase-start" class="game-card p-10 text-center flex flex-col items-center justify-center min-h-[400px]">
-            <h1 class="pixel-font text-2xl sm:text-4xl text-yellow-400 mb-8 leading-tight" style="text-shadow: 4px 4px #ff0055;">
+        <div id="phase-start" class="game-card p-8 sm:p-10 text-center flex flex-col items-center justify-center min-h-[450px]">
+            <h1 class="pixel-font text-3xl sm:text-4xl text-yellow-400 mb-10 leading-tight" style="text-shadow: 4px 4px #ff0055;">
                 熱血創客<br>能量加載
             </h1>
-            <p class="text-sm text-gray-300 mb-8 font-bold">歡迎來到本學期的期末回饋挑戰！</p>
-            <button onclick="transitionTo('phase-guide')" class="pixel-font bg-cyan-400 text-black px-8 py-5 text-sm hover:bg-white shadow-[0_0_20px_#00ffff] transition-all">
+            <p class="text-lg text-gray-300 mb-10 font-bold">歡迎來到本學期的期末回饋挑戰！</p>
+            <button onclick="transitionTo('phase-guide')" class="pixel-font bg-cyan-400 text-black w-full sm:w-auto px-10 py-6 text-lg hover:bg-white shadow-[0_0_20px_#00ffff] transition-all">
                 進入說明
             </button>
         </div>
 
         <!-- Guide Screen -->
-        <div id="phase-guide" class="hidden game-card p-8 text-center flex flex-col justify-center min-h-[400px]">
-            <div class="space-y-4">
-                <h2 class="pixel-font text-xl text-cyan-400 mb-4">挑戰規則</h2>
-                <div class="text-left text-gray-300 space-y-4 font-bold text-base">
-                    <p class="border-l-4 border-pink-500 pl-3">1. 接下來有 10 個關於這學期課程的問題。</p>
-                    <p class="border-l-4 border-cyan-500 pl-3">2. 請依照你的真實感受選擇分數（1分最低，10分最高）。</p>
-                    <p class="border-l-4 border-yellow-500 pl-3">3. 完成後系統會計算你的「創客等級」並給你鼓勵。</p>
+        <div id="phase-guide" class="hidden game-card p-6 sm:p-8 text-center flex flex-col justify-center min-h-[450px]">
+            <div class="space-y-6">
+                <h2 class="pixel-font text-2xl text-cyan-400 mb-4">挑戰規則</h2>
+                <div class="text-left text-gray-300 space-y-6 font-bold text-lg">
+                    <p class="border-l-4 border-pink-500 pl-4">1. 接下來有 10 個關於這學期課程的問題。</p>
+                    <p class="border-l-4 border-cyan-500 pl-4">2. 請依照你的感受選擇分數（1分最低，10分最高）。</p>
+                    <p class="border-l-4 border-yellow-500 pl-4">3. 完成後會計算你的「創客等級」！</p>
                 </div>
-                <div class="bg-gray-900 p-4 mt-4">
-                    <p class="text-pink-400 font-bold leading-relaxed">提示：請務必認真填寫，你的意見對老師非常重要喔！</p>
+                <div class="bg-gray-900 p-5 mt-4">
+                    <p class="text-pink-400 font-bold text-base leading-relaxed">提示：請務必認真填寫，你的意見對老師非常重要喔！</p>
                 </div>
-                <button onclick="startGame()" class="mt-6 pixel-font bg-pink-500 text-white px-6 py-4 text-xs hover:bg-white hover:text-pink-500 transition-all shadow-[0_0_15px_#ff0055]">
+                <button onclick="startGame()" class="mt-8 pixel-font bg-pink-500 text-white w-full sm:w-auto px-8 py-5 text-base hover:bg-white hover:text-pink-500 transition-all shadow-[0_0_15px_#ff0055]">
                     開始挑戰吧！
                 </button>
             </div>
         </div>
 
         <!-- Gameplay Phase -->
-        <div id="phase-game" class="hidden game-card p-6 sm:p-10 flex flex-col justify-between min-h-[450px]">
+        <div id="phase-game" class="hidden game-card p-6 sm:p-10 flex flex-col justify-between min-h-[500px]">
             <div class="text-center flex-grow flex flex-col justify-center items-center">
-                <span class="text-xs text-gray-500 pixel-font mb-4">系統同步中...</span>
-                <h2 id="question-text" class="text-xl sm:text-2xl font-black tracking-wide leading-relaxed text-white">
+                <span class="text-sm text-gray-500 pixel-font mb-6">系統同步中...</span>
+                <h2 id="question-text" class="text-2xl sm:text-3xl font-black tracking-wide leading-relaxed text-white">
                     載入中...
                 </h2>
-                <p id="question-focus" class="mt-4 text-[10px] text-cyan-500 pixel-font opacity-70"></p>
+                <p id="question-focus" class="mt-6 text-sm text-cyan-500 pixel-font opacity-80"></p>
             </div>
 
-            <div class="space-y-2 mt-8">
-                <p class="text-xs text-gray-400 font-bold text-center mb-2">請點擊按鈕評分 (1-10分)</p>
-                <div class="grid grid-cols-5 gap-2 sm:gap-3">
-                    <button onclick="handleScore(1, event)" class="btn-score py-4 font-black rounded text-xl">1</button>
-                    <button onclick="handleScore(2, event)" class="btn-score py-4 font-black rounded text-xl">2</button>
-                    <button onclick="handleScore(3, event)" class="btn-score py-4 font-black rounded text-xl">3</button>
-                    <button onclick="handleScore(4, event)" class="btn-score py-4 font-black rounded text-xl">4</button>
-                    <button onclick="handleScore(5, event)" class="btn-score py-4 font-black rounded text-xl">5</button>
-                    <button onclick="handleScore(6, event)" class="btn-score py-4 font-black rounded text-xl">6</button>
-                    <button onclick="handleScore(7, event)" class="btn-score py-4 font-black rounded text-xl">7</button>
-                    <button onclick="handleScore(8, event)" class="btn-score py-4 font-black rounded text-xl">8</button>
-                    <button onclick="handleScore(9, event)" class="btn-score py-4 font-black rounded text-xl">9</button>
-                    <button onclick="handleScore(10, event)" class="btn-score py-4 font-black rounded text-xl">10</button>
+            <div class="space-y-4 mt-8">
+                <p class="text-sm text-gray-400 font-bold text-center mb-2">請點擊按鈕評分 (1-10分)</p>
+                <div class="grid grid-cols-5 gap-2 sm:gap-4">
+                    <button onclick="handleScore(1, event)" class="btn-score font-black rounded text-2xl">1</button>
+                    <button onclick="handleScore(2, event)" class="btn-score font-black rounded text-2xl">2</button>
+                    <button onclick="handleScore(3, event)" class="btn-score font-black rounded text-2xl">3</button>
+                    <button onclick="handleScore(4, event)" class="btn-score font-black rounded text-2xl">4</button>
+                    <button onclick="handleScore(5, event)" class="btn-score font-black rounded text-2xl">5</button>
+                    <button onclick="handleScore(6, event)" class="btn-score font-black rounded text-2xl">6</button>
+                    <button onclick="handleScore(7, event)" class="btn-score font-black rounded text-2xl">7</button>
+                    <button onclick="handleScore(8, event)" class="btn-score font-black rounded text-2xl">8</button>
+                    <button onclick="handleScore(9, event)" class="btn-score font-black rounded text-2xl">9</button>
+                    <button onclick="handleScore(10, event)" class="btn-score font-black rounded text-2xl">10</button>
                 </div>
             </div>
         </div>
 
         <!-- Draw Phase -->
-        <div id="phase-draw" class="hidden game-card p-10 text-center flex flex-col items-center justify-center min-h-[450px]">
-            <h2 class="pixel-font text-2xl text-cyan-400 mb-4">能量滿載！！</h2>
-            <div class="border-2 border-pink-500 px-6 py-4 mb-8 bg-black">
-                <p class="font-bold text-lg">創客總積分: <span id="final-total" class="text-pink-500 text-3xl">0</span></p>
+        <div id="phase-draw" class="hidden game-card p-8 text-center flex flex-col items-center justify-center min-h-[500px]">
+            <h2 class="pixel-font text-3xl text-cyan-400 mb-6">能量滿載！！</h2>
+            <div class="border-4 border-pink-500 px-8 py-6 mb-10 bg-black">
+                <p class="font-bold text-xl">創客總積分: <span id="final-total" class="text-pink-500 text-4xl">0</span></p>
             </div>
-            <div id="omikuji-box" class="w-32 h-44 bg-gradient-to-br from-pink-600 to-red-900 border-4 border-white shadow-[0_0_40px_rgba(255,0,85,0.6)] mb-8 flex items-center justify-center">
-                <span class="pixel-font text-5xl text-white">?</span>
+            <div id="omikuji-box" class="w-36 h-48 bg-gradient-to-br from-pink-600 to-red-900 border-4 border-white shadow-[0_0_40px_rgba(255,0,85,0.6)] mb-10 flex items-center justify-center">
+                <span class="pixel-font text-6xl text-white">?</span>
             </div>
-            <button id="draw-btn" onclick="executeDraw()" class="w-full bg-cyan-400 text-black py-5 font-black text-xl hover:bg-white shadow-[0_0_20px_#00ffff] press-start">
+            <button id="draw-btn" onclick="executeDraw()" class="w-full bg-cyan-400 text-black py-6 font-black text-2xl hover:bg-white shadow-[0_0_20px_#00ffff] press-start">
                 領取最終評價
             </button>
         </div>
 
         <!-- Result Phase -->
-        <div id="phase-result" class="hidden game-card p-6 sm:p-10 text-center flex flex-col items-center justify-center min-h-[450px]">
-            <div id="result-border" class="border-4 p-6 sm:p-8 bg-black w-full relative overflow-hidden">
-                <div class="pixel-font text-[10px] text-gray-500 mb-2 tracking-widest">RANKING_ANALYSIS</div>
+        <div id="phase-result" class="hidden game-card p-6 sm:p-10 text-center flex flex-col items-center justify-center min-h-[500px]">
+            <div id="result-border" class="border-4 p-6 sm:p-10 bg-black w-full relative overflow-hidden">
+                <div class="pixel-font text-[12px] text-gray-500 mb-4 tracking-widest">RANKING_ANALYSIS</div>
                 <div id="rank-container"></div>
-                <div id="divider" class="h-1 w-full my-6 bg-white"></div>
-                <p id="blessing-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed mb-6"></p>
+                <div id="divider" class="h-1.5 w-full my-8 bg-white"></div>
+                <p id="blessing-text" class="text-xl sm:text-2xl font-bold text-white leading-relaxed mb-8"></p>
                 
-                <div class="bg-yellow-900/30 border border-yellow-500/50 p-3 rounded-lg">
-                    <p class="text-yellow-400 font-bold text-sm sm:text-base">
+                <div class="bg-yellow-900/40 border-2 border-yellow-500/50 p-5 rounded-xl">
+                    <p class="text-yellow-400 font-bold text-base sm:text-lg">
                         🎉 新年快樂特別祝福：<br>
                         願你的 2026 年，充滿好奇心與創造力，每天都像雷切光束一樣精采！
                     </p>
                 </div>
             </div>
-            <button onclick="location.reload()" class="pixel-font text-[10px] mt-8 text-gray-600 hover:text-white transition border-b border-gray-800">重新開始測試 (2026.01.01)</button>
+            <button onclick="location.reload()" class="pixel-font text-[12px] mt-10 text-gray-500 hover:text-white transition border-b border-gray-800">重新開始測試 (2026.01.01)</button>
         </div>
     </div>
 
@@ -240,7 +254,7 @@
 
         const blessings = [
             { rank: "唯一級", class: "rank-unique", color: "#ffffff", text: "你的創意獨一無二，這份專注與耐心是你最棒的寶物！" },
-            { rank: "神話級", class: "rank-mythic", color: "#ff00ff", text: "你展現了超強的創客天分，未來一定能做出更驚人的東西！" },
+            { rank: "神話級", class: "rank-mythic", color: "#ff0055", text: "你展現了超強的創客天分，未來一定能做出更驚人的東西！" },
             { rank: "傳說級", class: "rank-legendary", color: "#ffaa00", text: "你的表現非常優異，大家都對你的作品讚不絕口喔！" },
             { rank: "史詩級", class: "rank-epic", color: "#a335ee", text: "你在失敗中不斷嘗試的精神，讓你成為最棒的創客戰士！" },
             { rank: "幻象級", class: "rank-mirage", color: "#00ffff", text: "你的想法充滿想像力，這學期的進步讓老師感到很驕傲！" }
@@ -252,6 +266,7 @@
         function transitionTo(phaseId) {
             document.querySelectorAll('.game-card').forEach(p => p.classList.add('hidden'));
             document.getElementById(phaseId).classList.remove('hidden');
+            window.scrollTo(0, 0); // 切換頁面時回到頂部
         }
 
         function startGame() {
@@ -289,9 +304,9 @@
 
         function createPopup(x, y) {
             const p = document.createElement('div');
-            p.className = 'energy-popup font-bold text-sm';
+            p.className = 'energy-popup font-bold text-xl'; // 加大 Popup 字體
             p.innerText = `加值能量!`;
-            p.style.left = `${x}px`; p.style.top = `${y - 20}px`;
+            p.style.left = `${x}px`; p.style.top = `${y - 40}px`;
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
         }
